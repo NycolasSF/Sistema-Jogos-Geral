@@ -24,6 +24,13 @@ $('#btn_recurso').click(function() {
 	$('#painel').hide( "slow" );
 		$('#classificação').hide( "slow" );
 });
+$('#btn_add_noticia').click(function() {
+	$('#casdastrar-noticias').slideToggle();
+	$('#disputas').hide( "slow" );
+	$('#painel').hide( "slow" );
+	$('#vizualizar-noticia-criada').hide("slow");
+		$('#classificação').hide( "slow" );
+});
 $('#myBtn').click(function() {
 	$('#myModal').toggle('fast');
 });
@@ -36,11 +43,12 @@ $('#myBtn2').click(function() {
 $('#close2').click(function() {
 	$('#myModal2').hide( "fast ");
 });
-
 $('#menu').click(function() {
 	$('#ul_menu').slideToggle();
 });
- 
+
+
+
 $( function() {
     $( "#dialog-confirm" ).dialog({
 

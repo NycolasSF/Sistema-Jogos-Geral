@@ -1,4 +1,4 @@
-<?php 
+<?php
 
   include('conexão.php');
 
@@ -7,7 +7,7 @@
 class Cloud extends Conexao
 {
 
-   // Busca banco de dados 
+   // Busca banco de dados
 
    private $_arbitros = 'select*from arbitros';
    private $_todos_recursos = "SELECT nome_completo,horario_recurso,modalidade,situação FROM recursos INNER JOIN lider_sala INNER JOIN Turma ON recursos.id_turma = Turma.id_turma and recursos.id_lider = lider_sala.id_lider";
@@ -22,6 +22,8 @@ class Cloud extends Conexao
 
     private $Organização = 'select*from Organização';
     private $classificação = 'select nome_turma,sum(pontuação) as soma FROM disputas INNER JOIN Turma INNER JOIN lider_sala on disputas.id_turma = Turma.id_turma GROUP BY nome_turma HAVING sum(pontuação) ORDER BY sum(pontuação) DESC';
+
+    private $ultimasNoticias = 'SELECT * FROM NOTICIAS';//aq que está dando o erro na função mostrar-mostrar_Ultimas_noticias
    // Fim
 
    public function mostrar_arbitros()
@@ -106,7 +108,7 @@ class Cloud extends Conexao
           echo "</tr>";
         }
         }
-      
+
     }
      public function mostrar_organização()
     {
@@ -124,7 +126,7 @@ class Cloud extends Conexao
           echo "</tr>";
         }
         }
-      
+
     }
     public function mostrar_recursos()
     {
@@ -138,7 +140,7 @@ class Cloud extends Conexao
         echo "<td>".$exibe['horario_recurso'] ."</td>";
         echo "<td>".$exibe['nome_completo']."</td>";
         echo "<td>".$exibe['modalidade']."</td>";
-        echo "<td>".$exibe['situação']."</td>"; 
+        echo "<td>".$exibe['situação']."</td>";
         echo "</tr>";
       }
     }
@@ -152,7 +154,7 @@ class Cloud extends Conexao
       }
     public function insert_lider($lider,$ra,$turma)
     {
-      $sql = mysqli_query($this->conectar(),"insert into lider_sala values(0,'".$lider."','".$ra."','".$turma."',now())");      
+      $sql = mysqli_query($this->conectar(),"insert into lider_sala values(0,'".$lider."','".$ra."','".$turma."',now())");
     }
     public function insert_organização($lider,$ra,$comissao)
     {
@@ -169,19 +171,50 @@ class Cloud extends Conexao
          echo "<script>window.location.href='../index.php';</script>";
 
        }else{
-          if(!isset($_SESSION))   
-            session_start();    
+          if(!isset($_SESSION))
+            session_start();
           while($exibe = mysqli_fetch_assoc($sql)){
-        
-            $_SESSION['comissão'] = $exibe['comissão'];     
+
+            $_SESSION['comissão'] = $exibe['comissão'];
             $_SESSION['nome'] = $exibe['nome_integrante_organização'];
-            $_SESSION['matricula']=$exibe['RA']; 
+            $_SESSION['matricula']=$exibe['RA'];
 
             header('location:../inicial.php');
 
           }
-              
+
        }
+    }
+    public function mostrar_Ultimas_noticias()
+    {
+      $sql = mysqli_query($this->conectar(),$this->ultimasNoticias);
+      $contar = mysqli_num_rows($sql);
+
+
+      if ($contar > 0) {
+        while ($exibe = mysqli_fetch_assoc($sql)) {
+
+         echo  '<div id="noticias" class="tabcontent">';
+         echo    '<h1 class="title-tabs">Últimas Notícias</h1>';
+         echo    '<div class="content-cards">';
+         echo      '<div class="card card-01">';
+         echo        '<h2 id="titulo-noticias">'.$exibe['titulo_noticia'].'</h2>';
+         echo        '<p class="date-noticia"><i class="large material-icons">date_range</i>'.$exibe['data_noticia'].'</p>';
+         echo          '<img src="https://i.ytimg.com/vi/403YQpHfRIk/maxresdefault.jpg"></img>';
+         echo          '<div class="content-info">';
+         echo            '<p>'.$exibe['desc_noticia'].'</p>';
+         echo          '</div>';
+         echo      '</div> <!--fim-card-->';
+         echo      '<div class="card card-02">';
+         echo        '<h2 id="titulo-noticias">'.$exibe['titulo_noticia'].'</h2>';
+         echo        '<p class="date-noticia"><i class="large material-icons">date_range</i>'.$exibe['data_noticia'].'</p>';
+         echo        '<img src="https://i.ytimg.com/vi/403YQpHfRIk/maxresdefault.jpg"></img>';
+         echo          '<div class="content-info">';
+         echo            '<p>'.$exibe['desc_noticia'].'</p>';
+         echo          '</div>';
+         echo      '</div> <!--fim-card-->';
+        }
+      }
     }
 
 }
